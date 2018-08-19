@@ -1,3 +1,4 @@
+#/usr/bin/env python
 from selenium import webdriver
 import GxbManager as gm
 import json
