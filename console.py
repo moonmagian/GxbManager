@@ -41,7 +41,6 @@ def autoClassProcess():
         try:
             if(driver.execute_script('return document.readyState') != 'complete'):
                 continue
-            status = gm.status(driver)
             if(not gm.inVideoPage(driver)):
                 if(gm.nextVideo(driver)):
                     print(
@@ -50,6 +49,7 @@ def autoClassProcess():
                     print(
                         "[Error] Can't find video and not in special pages! Ensure you are in a valid page!")
             else:
+                status = gm.status(driver)
                 if(status.playStatus == 'paused'):
                     if(gm.needAnswer(driver)):
                         if(gm.answer(driver)):

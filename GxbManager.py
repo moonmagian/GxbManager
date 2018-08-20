@@ -12,9 +12,7 @@ Time(sec): {2} / {3}'''
 
 CLASS_REGEX = r'''https://bh3773.class.gaoxiaobang.com/class/(\d+)/unit/(\d+)/chapter/(\d+)'''
 CLASS_STRING = '''https://bh3773.class.gaoxiaobang.com/class/{0}/unit/{1}/chapter/{2}'''
-# Get VideoList needs LOTS OF resources, cache them to lower CPU usage.
-VLcache = {}
-# Also for VideoListIds
+# Get VideoListIDs needs LOTS OF resources, cache them to lower CPU usage.
 VLIDcache = {}
 
 
@@ -34,13 +32,8 @@ class Status:
 
 def videoList(driver: webdriver.chrome.webdriver.WebDriver):
     try:
-        cid = re.match(CLASS_REGEX, driver.current_url).groups()[0]
-        if(cid in VLcache.keys()):
-            return VLcache[cid]
-        else:
-            VLcache[cid] = list(filter(lambda x: x.get_attribute(
+        return list(filter(lambda x: x.get_attribute(
                 'content_type') == 'Video', driver.find_elements_by_class_name("chapter-info")))
-            return VLcache[cid]
     except:
         return []
 
@@ -75,7 +68,7 @@ def status(driver: webdriver.chrome.webdriver.WebDriver):
             output.playStatus = 'playing'
         output.duration = videoPlayer.get_property('duration')
         output.ctime = videoPlayer.get_property('currentTime')
-    except selenium.common.exceptions.NoSuchElementException:
+    except Exception:
         output.error = True
     finally:
         return output
@@ -92,7 +85,7 @@ def triggerPlay(driver):
         videoPlayer = driver.find_element_by_class_name('video-js')
         videoPlayer.click()
         return True
-    except selenium.common.exceptions.NoSuchElementException:
+    except Exception:
         return False
 
 
@@ -159,7 +152,7 @@ def nextVideo(driver: webdriver.chrome.webdriver.WebDriver):
         else:
             return False
             # TODO: When the class ends. Raise a custom error and start a new class.
-    except ValueError:
+    except:
         return False
 
 
