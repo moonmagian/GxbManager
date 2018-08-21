@@ -22,6 +22,7 @@ lg: login using username and password from user.json
 ls: get a list of all videos' title.
 ao: turn on auto class processer.
 af: turn off auto class processer.
+ss: screenshot current page and save it as [timestamp].png
 auto class processer can automatically solve in-video questions, start paused videos and skip discussions/exams.
 '''
 parser = argparse.ArgumentParser(description="Open GXB class manager")
@@ -40,10 +41,11 @@ if(args.headless):
     chrome_options.add_argument('--headless')
 chrome_options.add_argument('--no-sandbox')
 driver = webdriver.Chrome(chrome_options=chrome_options)
+if(args.headless):
+    driver.set_window_size(1366, 768)
 driver.get('http://bh3773.gaoxiaobang.com')
 print('>>', end='')
 context = input()
-
 
 def autoClassProcess():
     while(not autoClassShouldStop):
@@ -130,6 +132,8 @@ while(context):
             autoClass.start()
     elif(context == 'af'):
         autoClassShouldStop = True
+    elif(context == 'ss'):
+        driver.save_screenshot(str(int(time.time())) + '.png')
     elif(context == 'q'):
         break
     elif(len(context.split(' ')) == 2 and context.split(' ')[0] == 'g'):
