@@ -1,5 +1,6 @@
-#/usr/bin/env python
+# /usr/bin/env python
 from selenium import webdriver
+import selenium
 import GxbManager as gm
 import json
 import threading
@@ -11,6 +12,7 @@ GXB MANAGER IS ONLY FOR STUDY
 
 Command list:
 h: display help.
+g [target]: go to target webpage.
 s: show current status of video.
 p: play/stop current video.
 a: answer dialog question.
@@ -23,12 +25,20 @@ af: turn off auto class processer.
 auto class processer can automatically solve in-video questions, start paused videos and skip discussions/exams.
 '''
 parser = argparse.ArgumentParser(description="Open GXB class manager")
-parser.add_argument("-f", "--file", default="user.json", help="json file for username and password")
+parser.add_argument("-f", "--file", default="user.json",
+                    help="json file for username and password")
+parser.add_argument("-n", "--headless", default=False, action="store_true",
+                    help="use headless chrome")
+parser.add_argument("-m", "--mute", default=False,
+                    action="store_true", help="mute all sounds from browser")
 args = parser.parse_args()
 autoClassShouldStop = False
 chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--mute-audio')
-driver = webdriver.Chrome()
+if(args.mute):
+    chrome_options.add_argument('--mute-audio')
+if(args.headless):
+    chrome_options.add_argument('--headless')
+driver = webdriver.Chrome(chrome_options=chrome_options)
 driver.get('http://bh3773.gaoxiaobang.com')
 print('>>', end='')
 context = input()
@@ -121,9 +131,17 @@ while(context):
         autoClassShouldStop = True
     elif(context == 'q'):
         break
+    elif(len(context.split(' ')) == 2 and context.split(' ')[0] == 'g'):
+        try:
+            driver.get(context.split(' ')[1])
+            output = ""
+        except selenium.common.exceptions.WebDriverException:
+            output = "Not valid address!"
     else:
         output = "Unknown command. Input h to see all available commands."
     print(output)
     print('>>', end='')
     context = input()
 driver.quit()
+autoClassShouldStop = True
+quit()
