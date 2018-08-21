@@ -38,6 +38,7 @@ if(args.mute):
     chrome_options.add_argument('--mute-audio')
 if(args.headless):
     chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
 driver = webdriver.Chrome(chrome_options=chrome_options)
 driver.get('http://bh3773.gaoxiaobang.com')
 print('>>', end='')
